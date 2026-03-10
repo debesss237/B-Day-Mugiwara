@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🎉 Selamat Ulang Tahun! — Luffy Style</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --red: #e8131a;
+      --gold: #FFD700;
+      --dark: #0a0507;
+      --cream: #fff8e7;
+      --ocean: #0a3d62;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--dark);
+      color: var(--cream);
+      font-family: 'Nunito', sans-serif;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* ─── INTRO OVERLAY ─── */
+    #intro {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #000;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 0;
+      overflow: hidden;
+    }
+    #intro.hide {
+      animation: introFadeOut 1.2s ease forwards;
+      pointer-events: none;
+    }
+    @keyframes introFadeOut {
+      0% { opacity: 1; }
+      100% { opacity: 0; visibility: hidden; }
+    }
+
+    .intro-line {
+      font-family: 'Bangers', cursive;
+      color: #fff;
+      letter-spacing: 6px;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+      text-align: center;
+    }
+    .intro-line.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .intro-line.red { color: var(--red); text-shadow: 0 0 40px #e8131a; }
+    .intro-line.gold { color: var(--gold); text-shadow: 0 0 40px #FFD700; }
+    .intro-line.small { font-size: clamp(14px, 3vw, 20px); letter-spacing: 8px; margin-bottom: 10px; }
+    .intro-line.big   { font-size: clamp(60px, 16vw, 130px); line-height: 0.95; margin-bottom: 6px; }
+    .intro-line.med   { font-size: clamp(22px, 5vw, 42px); margin-bottom: 30px; }
+
+    .intro-divider {
+      width: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      transition: width 1s ease;
+      margin: 18px 0;
+    }
+    .intro-divider.show { width: min(500px, 80vw); }
+
+    .intro-skip {
+      position: absolute; bottom: 36px; right: 36px;
+      font-family: 'Nunito', sans-serif; font-size: 13px;
+      color: rgba(255,255,255,0.3); letter-spacing: 3px;
+      cursor: pointer; border: 1px solid rgba(255,255,255,0.15);
+      padding: 8px 18px; border-radius: 30px;
+      transition: color 0.3s, border-color 0.3s;
+      opacity: 0; animation: fadeInBtn 1s 3s ease forwards;
+    }
+    .intro-skip:hover { color: #fff; border-color: rgba(255,255,255,0.5); }
+    @keyframes fadeInBtn {
+      to { opacity: 1; }
+    }
+
+    /* scan-line effect */
+    #intro::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px, transparent 3px,
+        rgba(0,0,0,0.12) 3px, rgba(0,0,0,0.12) 4px
+      );
+      pointer-events: none;
+    }
+
+    /* flash effect */
+    .flash {
+      position: fixed; inset: 0; z-index: 10000;
+      background: var(--red);
+      opacity: 0; pointer-events: none;
+    }
+    .flash.go { animation: flashAnim 0.5s ease forwards; }
+    @keyframes flashAnim {
+      0% { opacity: 0.7; }
+      100% { opacity: 0; }
+    }
+
+    /* hide main page during intro */
+    .page, .stars, .ocean-wrap, .confetti-container {
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    body.revealed .page,
+    body.revealed .stars,
+    body.revealed .ocean-wrap,
+    body.revealed .confetti-container {
+      opacity: 1;
+    }
+
+    /* ─── STARS BACKGROUND ─── */
+    .stars {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background: radial-gradient(ellipse at 20% 50%, #1a0a00 0%, var(--dark) 60%),
+                  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Ccircle cx='30' cy='60' r='1.2' fill='%23ffffff55'/%3E%3Ccircle cx='90' cy='20' r='0.8' fill='%23ffffff44'/%3E%3Ccircle cx='200' cy='80' r='1.5' fill='%23ffffff66'/%3E%3Ccircle cx='320' cy='30' r='1' fill='%23ffffff55'/%3E%3Ccircle cx='370' cy='150' r='0.7' fill='%23ffffff33'/%3E%3Ccircle cx='50' cy='200' r='1.3' fill='%23ffffff44'/%3E%3Ccircle cx='150' cy='300' r='0.9' fill='%23ffffff55'/%3E%3Ccircle cx='280' cy='250' r='1.1' fill='%23ffffff44'/%3E%3Ccircle cx='380' cy='310' r='0.6' fill='%23ffffff33'/%3E%3Ccircle cx='120' cy='380' r='1.4' fill='%23ffffff55'/%3E%3Ccircle cx='350' cy='380' r='0.8' fill='%23ffffff44'/%3E%3C/svg%3E");
+    }
+
+    /* ─── OCEAN WAVES ─── */
+    .ocean-wrap {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 0; height: 180px; overflow: hidden;
+    }
+    .wave {
+      position: absolute; bottom: 0; left: -50%; width: 200%; height: 100px;
+      background: var(--ocean);
+      border-radius: 50% 50% 0 0;
+      animation: wave 7s infinite ease-in-out;
+      opacity: 0.5;
+    }
+    .wave:nth-child(2) { animation-delay: -2s; animation-duration: 9s; opacity: 0.3; height: 80px; }
+    .wave:nth-child(3) { animation-delay: -4s; animation-duration: 5s; opacity: 0.2; height: 60px; }
+    @keyframes wave {
+      0%, 100% { transform: translateX(0) scaleY(1); }
+      50% { transform: translateX(5%) scaleY(1.1); }
+    }
+
+    /* ─── CONFETTI ─── */
+    .confetti-container {
+      position: fixed; inset: 0; pointer-events: none; z-index: 1;
+      overflow: hidden;
+    }
+    .confetti-piece {
+      position: absolute; top: -20px; width: 10px; height: 14px;
+      animation: fall linear infinite;
+    }
+    @keyframes fall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* ─── LAYOUT ─── */
+    .page {
+      position: relative; z-index: 2;
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+      padding: 40px 20px 200px;
+      gap: 0;
+    }
+
+    /* ─── HAT ─── */
+    .straw-hat {
+      width: 180px; height: auto;
+      animation: float 3s ease-in-out infinite;
+      filter: drop-shadow(0 0 30px rgba(255,215,0,0.6));
+      margin-bottom: -10px;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      50% { transform: translateY(-18px) rotate(3deg); }
+    }
+
+    /* ─── HERO TEXT ─── */
+    .hero { text-align: center; margin-top: 10px; }
+
+    .label-top {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: clamp(13px, 3vw, 18px);
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.85;
+      animation: fadeIn 1s ease both;
+    }
+
+    .big-title {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(70px, 18vw, 160px);
+      letter-spacing: 4px;
+      line-height: 0.9;
+      color: var(--red);
+      text-shadow:
+        4px 4px 0 #000,
+        8px 8px 0 #5a0000,
+        0 0 60px rgba(255, 30, 30, 0.5);
+      animation: titleBounce 1s cubic-bezier(.36,.07,.19,.97) both;
+    }
+    @keyframes titleBounce {
+      0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
+      60% { transform: scale(1.1) rotate(2deg); }
+      100% { transform: scale(1) rotate(0); opacity: 1; }
+    }
+
+    .big-title span {
+      color: var(--gold);
+      text-shadow:
+        4px 4px 0 #7a5500,
+        0 0 40px rgba(255,215,0,0.7);
+    }
+
+    .subtitle {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(28px, 7vw, 60px);
+      letter-spacing: 3px;
+      color: var(--cream);
+      text-shadow: 3px 3px 0 #333;
+      margin-top: -10px;
+      animation: fadeIn 1.2s ease both;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── LUFFY SVG ─── */
+    .luffy-wrap {
+      position: relative;
+      margin: 30px auto -10px;
+      width: min(340px, 90vw);
+      animation: fadeIn 1.5s ease both;
+    }
+    .luffy-svg {
+      width: 100%;
+      filter: drop-shadow(0 20px 40px rgba(232,19,26,0.5));
+    }
+
+    /* ─── CARD ─── */
+    .card {
+      background: rgba(255,248,231,0.06);
+      border: 2px solid rgba(255,215,0,0.25);
+      border-radius: 24px;
+      padding: 32px 36px;
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+      backdrop-filter: blur(12px);
+      animation: fadeIn 2s ease both;
+      margin-top: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute; inset: 0;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(255,215,0,0.05), transparent 60%);
+    }
+
+    .card-quote {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(22px, 5vw, 34px);
+      color: var(--gold);
+      letter-spacing: 2px;
+      line-height: 1.3;
+      margin-bottom: 16px;
+    }
+
+    .card-text {
+      font-size: clamp(14px, 3vw, 18px);
+      line-height: 1.8;
+      color: rgba(255,248,231,0.85);
+    }
+
+    /* ─── BOUNTY BADGE ─── */
+    .bounty {
+      margin-top: 36px;
+      display: inline-block;
+      background: linear-gradient(135deg, #b8860b, #FFD700, #b8860b);
+      color: #2a1500;
+      font-family: 'Bangers', cursive;
+      font-size: clamp(16px, 4vw, 26px);
+      letter-spacing: 3px;
+      padding: 14px 36px;
+      border-radius: 60px;
+      border: 3px solid #7a5500;
+      box-shadow: 0 0 40px rgba(255,215,0,0.5), 0 6px 20px rgba(0,0,0,0.4);
+      animation: pulse 2.5s ease-in-out infinite;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .bounty:hover { transform: scale(1.05); }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 30px rgba(255,215,0,0.4), 0 6px 20px rgba(0,0,0,0.4); }
+      50% { box-shadow: 0 0 70px rgba(255,215,0,0.8), 0 6px 20px rgba(0,0,0,0.4); }
+    }
+
+    /* ─── CREW BADGES ─── */
+    .crew-section {
+      margin-top: 50px;
+      text-align: center;
+      animation: fadeIn 2.2s ease both;
+    }
+    .crew-title {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(20px, 5vw, 32px);
+      color: var(--gold);
+      letter-spacing: 4px;
+      margin-bottom: 20px;
+    }
+    .crew-grid {
+      display: flex; flex-wrap: wrap; gap: 14px; justify-content: center;
+    }
+    .crew-item {
+      background: rgba(255,255,255,0.07);
+      border: 1.5px solid rgba(255,215,0,0.2);
+      border-radius: 16px;
+      padding: 10px 18px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--cream);
+      display: flex; align-items: center; gap: 8px;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .crew-item:hover {
+      transform: translateY(-4px);
+      background: rgba(255,215,0,0.1);
+    }
+    .crew-item .icon { font-size: 20px; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      margin-top: 60px;
+      font-size: 13px;
+      color: rgba(255,248,231,0.3);
+      letter-spacing: 2px;
+      text-align: center;
+      animation: fadeIn 3s ease both;
+    }
+
+    /* ─── LUFFY DANCE ANIMATIONS ─── */
+    @keyframes bodyBounce {
+      0%,100% { transform: translateY(0); }
+      25%      { transform: translateY(-22px) rotate(-4deg); }
+      50%      { transform: translateY(-10px) rotate(0deg); }
+      75%      { transform: translateY(-20px) rotate(4deg); }
+    }
+    @keyframes armLDance {
+      0%,100% { transform: rotate(0deg); }
+      25%      { transform: rotate(-110deg); }
+      50%      { transform: rotate(-60deg); }
+      75%      { transform: rotate(-120deg); }
+    }
+    @keyframes armRDance {
+      0%,100% { transform: rotate(0deg); }
+      25%      { transform: rotate(110deg); }
+      50%      { transform: rotate(60deg); }
+      75%      { transform: rotate(120deg); }
+    }
+    @keyframes legLDance {
+      0%,100% { transform: rotate(0deg); }
+      25%      { transform: rotate(-20deg); }
+      75%      { transform: rotate(15deg); }
+    }
+    @keyframes legRDance {
+      0%,100% { transform: rotate(0deg); }
+      25%      { transform: rotate(20deg); }
+      75%      { transform: rotate(-15deg); }
+    }
+    @keyframes headWobble {
+      0%,100% { transform: rotate(0deg); }
+      20%      { transform: rotate(-8deg); }
+      40%      { transform: rotate(8deg); }
+      60%      { transform: rotate(-6deg); }
+      80%      { transform: rotate(6deg); }
+    }
+    @keyframes sparkleFloat {
+      0%,100% { transform: translateY(0) scale(1); opacity:1; }
+      50%      { transform: translateY(-12px) scale(1.2); opacity:0.7; }
+    }
+
+    #luffyBody.dancing   { animation: bodyBounce 0.6s ease-in-out infinite; }
+    #armL.dancing        { animation: armLDance 0.6s ease-in-out infinite; }
+    #armR.dancing        { animation: armRDance 0.6s ease-in-out infinite; }
+    #legL.dancing        { animation: legLDance 0.6s ease-in-out infinite; }
+    #legR.dancing        { animation: legRDance 0.6s ease-in-out infinite 0.3s; }
+    #luffyHead.dancing   { animation: headWobble 0.5s ease-in-out infinite; transform-origin: 170px 145px; }
+    #sparkles.dancing    { animation: sparkleFloat 0.8s ease-in-out infinite; }
+
+    .luffy-wrap.dancing  { filter: drop-shadow(0 0 50px rgba(255,215,0,0.9)); }
+
+    /* ─── BURST EFFECT ─── */
+    .burst {
+      position: fixed; pointer-events: none; z-index: 999;
+    }
+    .burst-circle {
+      position: absolute;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      animation: burst 0.6s ease-out forwards;
+    }
+    @keyframes burst {
+      0% { width: 0; height: 0; opacity: 1; }
+      100% { width: 80px; height: 80px; opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- FLASH -->
+  <div class="flash" id="flash"></div>
+
+  <!-- INTRO -->
+  <div id="intro">
+    <div class="intro-line small" id="il1">— DARI LAUTAN GRAND LINE —</div>
+    <div class="intro-divider" id="idv1"></div>
+    <div class="intro-line big red" id="il2">SELAMAT</div>
+    <div class="intro-line big gold" id="il3">ULANG</div>
+    <div class="intro-line big red" id="il4">TAHUN!</div>
+    <div class="intro-divider" id="idv2"></div>
+    <div class="intro-line med" id="il5">🏴‍☠️ Nakama Terbaik 🏴‍☠️</div>
+    <div class="intro-skip" id="introSkip">SKIP ▶</div>
+  </div>
+
+  <div class="stars"></div>
+  <div class="ocean-wrap">
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+  </div>
+  <div class="confetti-container" id="confetti"></div>
+
+  <div class="page">
+
+    <!-- STRAW HAT SVG -->
+    <svg class="straw-hat" viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg">
+      <!-- Brim -->
+      <ellipse cx="150" cy="120" rx="148" ry="32" fill="#c8a832"/>
+      <ellipse cx="150" cy="114" rx="148" ry="32" fill="#e8c43a"/>
+      <!-- Crown -->
+      <path d="M70 115 Q80 40 150 35 Q220 40 230 115 Z" fill="#f0d050"/>
+      <path d="M75 110 Q85 50 150 44 Q215 50 225 110 Z" fill="#e8c43a"/>
+      <!-- Red band -->
+      <path d="M68 108 Q150 95 232 108 Q230 118 150 122 Q70 118 68 108 Z" fill="#e8131a"/>
+      <!-- Shine -->
+      <ellipse cx="130" cy="72" rx="22" ry="10" fill="rgba(255,255,255,0.18)" transform="rotate(-15,130,72)"/>
+    </svg>
+
+    <div class="hero">
+      <div class="label-top">⚓ Nakama Terbaik ⚓</div>
+      <div class="big-title">HAPPY <span>B'DAY!</span></div>
+      <div class="subtitle">Bajak Laut Topi Jerami</div>
+    </div>
+
+    <!-- LUFFY CARTOON SVG -->
+    <div class="luffy-wrap">
+      <svg id="luffySvg" class="luffy-svg" viewBox="0 0 340 400" xmlns="http://www.w3.org/2000/svg">
+        <!-- whole body group that bounces -->
+        <g id="luffyBody">
+          <!-- Left leg+shoe group -->
+          <g id="legL" style="transform-origin:129px 318px">
+            <rect x="107" y="318" width="44" height="55" rx="14" fill="#3a2b1a"/>
+            <ellipse cx="129" cy="370" rx="28" ry="12" fill="#1a1008"/>
+          </g>
+          <!-- Right leg+shoe group -->
+          <g id="legR" style="transform-origin:211px 318px">
+            <rect x="189" y="318" width="44" height="55" rx="14" fill="#3a2b1a"/>
+            <ellipse cx="211" cy="370" rx="28" ry="12" fill="#1a1008"/>
+          </g>
+          <!-- Body torso -->
+          <rect x="100" y="200" width="140" height="130" rx="20" fill="#e8131a"/>
+          <!-- Left arm group (rotates from shoulder) -->
+          <g id="armL" style="transform-origin:105px 219px">
+            <rect x="40" y="205" width="65" height="28" rx="14" fill="#f0c070"/>
+            <ellipse cx="50" cy="233" rx="18" ry="16" fill="#f0c070"/>
+          </g>
+          <!-- Right arm group -->
+          <g id="armR" style="transform-origin:235px 219px">
+            <rect x="235" y="205" width="65" height="28" rx="14" fill="#f0c070"/>
+            <ellipse cx="290" cy="233" rx="18" ry="16" fill="#f0c070"/>
+          </g>
+          <!-- Neck -->
+          <rect x="142" y="183" width="56" height="24" rx="10" fill="#f0c070"/>
+          <!-- Head group -->
+          <g id="luffyHead">
+            <ellipse cx="170" cy="145" rx="85" ry="82" fill="#f0c070"/>
+            <ellipse cx="87" cy="148" rx="16" ry="20" fill="#f0c070"/>
+            <ellipse cx="253" cy="148" rx="16" ry="20" fill="#f0c070"/>
+            <path d="M95 105 Q100 60 170 55 Q240 60 245 105 Q220 80 170 78 Q120 80 95 105 Z" fill="#1a1008"/>
+            <line x1="138" y1="152" x2="145" y2="162" stroke="#e8131a" stroke-width="4" stroke-linecap="round"/>
+            <!-- Eyes normal -->
+            <g id="eyesNormal">
+              <path d="M120 148 Q133 138 146 148" stroke="#1a1008" stroke-width="5" fill="none" stroke-linecap="round"/>
+              <path d="M194 148 Q207 138 220 148" stroke="#1a1008" stroke-width="5" fill="none" stroke-linecap="round"/>
+            </g>
+            <!-- Eyes celebrate (big circles) -->
+            <g id="eyesCelebrate" style="display:none">
+              <circle cx="133" cy="148" r="10" fill="#1a1008"/>
+              <circle cx="207" cy="148" r="10" fill="#1a1008"/>
+              <circle cx="130" cy="145" r="3" fill="white"/>
+              <circle cx="204" cy="145" r="3" fill="white"/>
+            </g>
+            <!-- Grin -->
+            <path d="M128 175 Q170 215 212 175" stroke="#1a1008" stroke-width="5" fill="none" stroke-linecap="round"/>
+            <path d="M133 178 Q170 210 207 178 Q170 200 133 178 Z" fill="white" opacity="0.9"/>
+            <line x1="152" y1="178" x2="150" y2="198" stroke="#ccc" stroke-width="2"/>
+            <line x1="170" y1="180" x2="170" y2="200" stroke="#ccc" stroke-width="2"/>
+            <line x1="188" y1="178" x2="190" y2="198" stroke="#ccc" stroke-width="2"/>
+            <!-- Straw hat -->
+            <ellipse cx="170" cy="80" rx="100" ry="22" fill="#c8a832"/>
+            <ellipse cx="170" cy="74" rx="100" ry="22" fill="#e8c43a"/>
+            <path d="M95 73 Q100 25 170 20 Q240 25 245 73 Z" fill="#f0d050"/>
+            <path d="M100 69 Q105 34 170 30 Q235 34 240 69 Z" fill="#e8c43a"/>
+            <path d="M93 66 Q170 55 247 66 Q245 76 170 80 Q95 76 93 66 Z" fill="#e8131a"/>
+          </g>
+          <!-- Stars/sparkles celebrate (hidden by default) -->
+          <g id="sparkles" style="display:none">
+            <text x="15"  y="100" font-size="22" fill="#FFD700">⭐</text>
+            <text x="280" y="90"  font-size="18" fill="#FFD700">✨</text>
+            <text x="10"  y="220" font-size="16" fill="#ff6eb4">🎉</text>
+            <text x="295" y="210" font-size="16" fill="#00c8ff">🎊</text>
+            <text x="140" y="395" font-size="18" fill="#FFD700">🎂</text>
+          </g>
+        </g>
+        <!-- Static confetti dots -->
+        <circle cx="35" cy="90" r="6" fill="#FFD700" opacity="0.8"/>
+        <rect x="290" y="80" width="10" height="10" rx="2" fill="#e8131a" transform="rotate(25,295,85)" opacity="0.8"/>
+        <circle cx="300" cy="160" r="5" fill="#00c8ff" opacity="0.7"/>
+        <circle cx="55" cy="300" r="7" fill="#e8131a" opacity="0.5"/>
+        <circle cx="295" cy="300" r="6" fill="#FFD700" opacity="0.5"/>
+      </svg>
+    </div>
+
+    <!-- MESSAGE CARD -->
+    <div class="card">
+      <div class="card-quote">"Aku akan menjadi Raja Bajak Laut!"</div>
+      <div class="card-text">
+        Tepat seperti semangat Luffy yang tak pernah padam,<br>
+        semoga hari ulang tahunmu penuh tawa, petualangan, dan kebahagiaan tanpa batas!<br><br>
+        Teruslah berlayar menuju mimpimu, karena nakama terbaikmu selalu ada untukmu. 🏴‍☠️🎉
+      </div>
+      <div class="bounty" id="bountyBtn">🎂 KLIK UNTUK MERAYAKAN! 🎂</div>
+    </div>
+
+    <!-- CREW SECTION -->
+    <div class="crew-section">
+      <div class="crew-title">⚓ Mugiwaras Ucapkan ⚓</div>
+      <div class="crew-grid">
+        <div class="crew-item"><span class="icon">⚔️</span> Zoro: "Jangan mati sebelum aku kalahkan!"</div>
+        <div class="crew-item"><span class="icon">🍊</span> Nami: "Selamat ultah, tapi kamu tetap utang!"</div>
+        <div class="crew-item"><span class="icon">🩺</span> Chopper: "Semoga selalu sehat!"</div>
+        <div class="crew-item"><span class="icon">🎸</span> Brook: "Yohohoho~ Happy Birthday!"</div>
+        <div class="crew-item"><span class="icon">🌊</span> Jinbe: "Tetap kuat, nakama!"</div>
+        <div class="crew-item"><span class="icon">🏹</span> Usopp: "Aku yang pertama doain kamu!"</div>
+        <div class="crew-item"><span class="icon">👑</span> Robin: "Selamat ulang tahun yang manis."</div>
+        <div class="crew-item"><span class="icon">⚙️</span> Franky: "SUPER! Ultahmu SUPER!"</div>
+        <div class="crew-item"><span class="icon">🍳</span> Sanji: "Sudah kubuatkan kue terbaik untukmu!"</div>
+      </div>
+    </div>
+
+    <footer>
+      ⚓ GRAND LINE BIRTHDAY CREW · ONE PIECE · Mugiwara no Luffy ⚓
+    </footer>
+  </div>
+
+  <script>
+    // ─── CONFETTI ───
+    const colors = ['#e8131a','#FFD700','#00c8ff','#ff9900','#fff','#ff6eb4'];
+    const shapes = ['circle','rect','diamond'];
+    const container = document.getElementById('confetti');
+
+    function makeConfetti() {
+      for (let i = 0; i < 60; i++) {
+        const el = document.createElement('div');
+        el.className = 'confetti-piece';
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const shape = shapes[Math.floor(Math.random() * shapes.length)];
+        const size = 7 + Math.random() * 8;
+
+        el.style.cssText = `
+          left: ${Math.random() * 100}vw;
+          width: ${size}px; height: ${size * 1.4}px;
+          background: ${color};
+          border-radius: ${shape === 'circle' ? '50%' : shape === 'diamond' ? '2px' : '2px'};
+          transform: ${shape === 'diamond' ? 'rotate(45deg)' : ''};
+          animation-duration: ${4 + Math.random() * 6}s;
+          animation-delay: ${Math.random() * 8}s;
+          opacity: ${0.7 + Math.random() * 0.3};
+        `;
+        container.appendChild(el);
+      }
+    }
+    makeConfetti();
+
+    // ─── INTRO SEQUENCE ───
+    function revealMain() {
+      const flash = document.getElementById('flash');
+      flash.classList.add('go');
+      setTimeout(() => {
+        const intro = document.getElementById('intro');
+        intro.classList.add('hide');
+        document.body.classList.add('revealed');
+      }, 300);
+    }
+
+    function runIntro() {
+      const items = ['il1','idv1','il2','il3','il4','idv2','il5'];
+      items.forEach((id, i) => {
+        setTimeout(() => {
+          document.getElementById(id).classList.add('show');
+        }, 400 + i * 550);
+      });
+      setTimeout(revealMain, 5800);
+    }
+
+    document.getElementById('introSkip').addEventListener('click', revealMain);
+    runIntro();
+
+    // ─── BURST ON CLICK ───
+    let isDancing = false;
+    let danceTimer = null;
+
+    document.getElementById('bountyBtn').addEventListener('click', () => {
+      // Confetti burst
+      for (let i = 0; i < 40; i++) {
+        const el = document.createElement('div');
+        el.className = 'confetti-piece';
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        el.style.cssText = `
+          left: ${20 + Math.random() * 60}vw;
+          top: -20px;
+          width: ${8 + Math.random() * 10}px; height: ${10 + Math.random() * 12}px;
+          background: ${color};
+          border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+          animation-duration: ${2 + Math.random() * 3}s;
+          animation-delay: 0s;
+        `;
+        container.appendChild(el);
+        setTimeout(() => el.remove(), 5000);
+      }
+
+      // Toggle Luffy dance
+      if (isDancing) return;
+      isDancing = true;
+
+      const btn = document.getElementById('bountyBtn');
+      const body  = document.getElementById('luffyBody');
+      const armL  = document.getElementById('armL');
+      const armR  = document.getElementById('armR');
+      const legL  = document.getElementById('legL');
+      const legR  = document.getElementById('legR');
+      const head  = document.getElementById('luffyHead');
+      const sp    = document.getElementById('sparkles');
+      const eyesN = document.getElementById('eyesNormal');
+      const eyesC = document.getElementById('eyesCelebrate');
+      const wrap  = document.querySelector('.luffy-wrap');
+
+      // Start dance
+      [body, armL, armR, legL, legR, head].forEach(el => el.classList.add('dancing'));
+      sp.style.display = '';
+      sp.classList.add('dancing');
+      eyesN.style.display = 'none';
+      eyesC.style.display = '';
+      wrap.classList.add('dancing');
+
+      btn.textContent = '🎊 GOMU GOMU NO BIRTHDAY!! 🎊';
+
+      // Stop after 4s
+      danceTimer = setTimeout(() => {
+        [body, armL, armR, legL, legR, head].forEach(el => el.classList.remove('dancing'));
+        sp.classList.remove('dancing');
+        sp.style.display = 'none';
+        eyesN.style.display = '';
+        eyesC.style.display = 'none';
+        wrap.classList.remove('dancing');
+        btn.textContent = '🎂 KLIK UNTUK MERAYAKAN! 🎂';
+        isDancing = false;
+      }, 4000);
+    });
+
+    // ─── CLICK BURST ANYWHERE ───
+    document.addEventListener('click', (e) => {
+      const burst = document.createElement('div');
+      burst.className = 'burst';
+      burst.style.left = e.clientX + 'px';
+      burst.style.top = e.clientY + 'px';
+
+      const c = document.createElement('div');
+      c.className = 'burst-circle';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.opacity = '0.5';
+      burst.appendChild(c);
+      document.body.appendChild(burst);
+      setTimeout(() => burst.remove(), 700);
+    });
+  </script>
+</body>
+</html>
